@@ -18,7 +18,11 @@
 
 #import "FBSDKDeviceLoginButton.h"
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKDeviceLoginViewController.h"
 
 @interface FBSDKDeviceLoginButton() <FBSDKDeviceLoginViewControllerDelegate>
@@ -151,8 +155,7 @@
   } else {
     FBSDKDeviceLoginViewController *vc = [[FBSDKDeviceLoginViewController alloc] init];
     vc.delegate = self;
-    vc.readPermissions = self.readPermissions;
-    vc.publishPermissions = self.publishPermissions;
+    vc.permissions = self.permissions;
     vc.redirectURL = self.redirectURL;
     [parentViewController presentViewController:vc animated:YES completion:NULL];
   }

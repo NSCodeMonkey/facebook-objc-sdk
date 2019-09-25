@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name              = 'FBSDKMarketingKit'
-    s.version           = '4.40.0'
+    s.version           = '5.6.0'
     s.summary           = 'Official Facebook SDK for iOS to set up Codeless Events'
 
     s.description  = <<-DESC
@@ -40,5 +40,5 @@ Pod::Spec.new do |s|
 
     s.ios.deployment_target = '8.0'
 
-    s.ios.dependency 'FBSDKCoreKit'
+    s.ios.dependency 'FBSDKCoreKit', "~> 5.5"
 end

@@ -18,7 +18,7 @@
 
 #import "FBSDKProfile+Internal.h"
 
-#import "FBSDKCoreKit+Internal.h"
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 
@@ -79,8 +79,8 @@ static FBSDKProfile *g_currentProfile;
     [[self class] cacheProfile:profile];
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 
-    [FBSDKInternalUtility dictionary:userInfo setObject:profile forKey:FBSDKProfileChangeNewKey];
-    [FBSDKInternalUtility dictionary:userInfo setObject:g_currentProfile forKey:FBSDKProfileChangeOldKey];
+    [FBSDKBasicUtility dictionary:userInfo setObject:profile forKey:FBSDKProfileChangeNewKey];
+    [FBSDKBasicUtility dictionary:userInfo setObject:g_currentProfile forKey:FBSDKProfileChangeOldKey];
     g_currentProfile = profile;
     [[NSNotificationCenter defaultCenter] postNotificationName:FBSDKProfileDidChangeNotification
                                                         object:[self class]

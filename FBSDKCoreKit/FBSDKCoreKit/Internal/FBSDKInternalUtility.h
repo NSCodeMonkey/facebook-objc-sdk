@@ -19,6 +19,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "FBSDKCoreKit+Internal.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define FBSDK_CANOPENURL_FACEBOOK @"fbauth2"
@@ -118,41 +120,6 @@ NS_SWIFT_NAME(InternalUtility)
 + (NSDictionary *)dictionaryFromFBURL:(NSURL *)url;
 
 /**
-  Adds an object to an array if it is not nil.
- @param array The array to add the object to.
- @param object The object to add to the array.
- */
-+ (void)array:(NSMutableArray *)array addObject:(id)object;
-
-/**
-  Converts simple value types to the string equivalent for serializing to a request query or body.
- @param value The value to be converted.
- @return The value that may have been converted if able (otherwise the input param).
- */
-+ (id)convertRequestValue:(id)value;
-
-/**
-  Sets an object for a key in a dictionary if it is not nil.
- @param dictionary The dictionary to set the value for.
- @param object The value to set after serializing to JSON.
- @param key The key to set the value for.
- @param errorRef If an error occurs, upon return contains an NSError object that describes the problem.
- @return NO if an error occurred while serializing the object, otherwise YES.
- */
-+ (BOOL)dictionary:(NSMutableDictionary *)dictionary
-setJSONStringForObject:(id)object
-            forKey:(id<NSCopying>)key
-             error:(NSError *__autoreleasing *)errorRef;
-
-/**
-  Sets an object for a key in a dictionary if it is not nil.
- @param dictionary The dictionary to set the value for.
- @param object The value to set.
- @param key The key to set the value for.
- */
-+ (void)dictionary:(NSMutableDictionary *)dictionary setObject:(id)object forKey:(id<NSCopying>)key;
-
-/**
   Constructs a Facebook URL.
  @param hostPrefix The prefix for the host, such as 'm', 'graph', etc.
  @param path The path for the URL.  This may or may not include a version.
@@ -223,17 +190,6 @@ setJSONStringForObject:(id)object
 + (BOOL)isUIKitRunTimeVersionAtLeast:(FBSDKUIKitVersion)version;
 
 /**
-  Converts an object into a JSON string.
- @param object The object to convert to JSON.
- @param errorRef If an error occurs, upon return contains an NSError object that describes the problem.
- @param invalidObjectHandler Handles objects that are invalid, returning a replacement value or nil to ignore.
- @return A JSON string or nil if the object cannot be converted to JSON.
- */
-+ (NSString *)JSONStringForObject:(id)object
-                            error:(NSError *__autoreleasing *)errorRef
-             invalidObjectHandler:(nullable FBSDKInvalidObjectHandler)invalidObjectHandler;
-
-/**
   Checks equality between 2 objects.
 
  Checks for pointer equality, nils, isEqual:.
@@ -244,26 +200,6 @@ setJSONStringForObject:(id)object
 + (BOOL)object:(id)object isEqualToObject:(id)other;
 
 /**
-  Converts a JSON string into an object
- @param string The JSON string to convert.
- @param errorRef If an error occurs, upon return contains an NSError object that describes the problem.
- @return An NSDictionary, NSArray, NSString or NSNumber containing the object representation, or nil if the string
- cannot be converted.
- */
-+ (id)objectForJSONString:(NSString *)string error:(NSError *__autoreleasing *)errorRef;
-
-/**
-  Constructs a query string from a dictionary.
- @param dictionary The dictionary with key/value pairs for the query string.
- @param errorRef If an error occurs, upon return contains an NSError object that describes the problem.
- @param invalidObjectHandler Handles objects that are invalid, returning a replacement value or nil to ignore.
- @return Query string representation of the parameters.
- */
-+ (NSString *)queryStringWithDictionary:(NSDictionary<NSString *, id> *)dictionary
-                                  error:(NSError *__autoreleasing *)errorRef
-                   invalidObjectHandler:(nullable FBSDKInvalidObjectHandler)invalidObjectHandler;
-
-/**
   Constructs an NSURL.
  @param scheme The scheme for the URL.
  @param host The host for the URL.
@@ -272,11 +208,11 @@ setJSONStringForObject:(id)object
  @param errorRef If an error occurs, upon return contains an NSError object that describes the problem.
  @return The URL.
  */
-+ (NSURL *)URLWithScheme:(NSString *)scheme
-                    host:(NSString *)host
-                    path:(NSString *)path
-         queryParameters:(NSDictionary *)queryParameters
-                   error:(NSError *__autoreleasing *)errorRef;
++ (nullable NSURL *)URLWithScheme:(NSString *)scheme
+                             host:(NSString *)host
+                             path:(NSString *)path
+                  queryParameters:(NSDictionary *)queryParameters
+                            error:(NSError *__autoreleasing *)errorRef;
 
 /**
  *  Deletes all the cookies in the NSHTTPCookieStorage for Facebook web dialogs
@@ -291,7 +227,8 @@ setJSONStringForObject:(id)object
  */
 + (void)extractPermissionsFromResponse:(NSDictionary *)responseObject
                     grantedPermissions:(NSMutableSet *)grantedPermissions
-                   declinedPermissions:(NSMutableSet *)declinedPermissions;
+                   declinedPermissions:(NSMutableSet *)declinedPermissions
+                    expiredPermissions:(NSMutableSet *)expiredPermissions;
 
 /**
   Registers a transient object so that it will not be deallocated until unregistered
@@ -329,7 +266,7 @@ setJSONStringForObject:(id)object
 /**
   Attempts to find the first UIViewController in the view's responder chain. Returns nil if not found.
  */
-+ (UIViewController *)viewControllerForView:(UIView *)view;
++ (nullable UIViewController *)viewControllerForView:(UIView *)view;
 
 /**
   returns true if the url scheme is registered in the CFBundleURLTypes
@@ -339,32 +276,22 @@ setJSONStringForObject:(id)object
 /**
  returns the current key window
  */
-+ (UIWindow *)findWindow;
++ (nullable UIWindow *)findWindow;
 
 /**
   returns currently displayed top view controller.
  */
-+ (UIViewController *)topMostViewController;
++ (nullable UIViewController *)topMostViewController;
 
 /**
   Converts NSData to a hexadecimal UTF8 String.
  */
-+ (NSString *)hexadecimalStringFromData:(NSData *)data;
++ (nullable NSString *)hexadecimalStringFromData:(NSData *)data;
 
 /*
   Checks if the permission is a publish permission.
  */
 + (BOOL)isPublishPermission:(NSString *)permission;
-
-/*
-  Checks if the set of permissions are all read permissions.
- */
-+ (BOOL)areAllPermissionsReadPermissions:(NSSet *)permissions;
-
-/*
-  Checks if the set of permissions are all publish permissions.
- */
-+ (BOOL)areAllPermissionsPublishPermissions:(NSSet *)permissions;
 
 #pragma mark - FB Apps Installed
 

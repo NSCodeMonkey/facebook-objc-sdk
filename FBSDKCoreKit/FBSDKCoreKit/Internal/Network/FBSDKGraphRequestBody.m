@@ -18,9 +18,12 @@
 
 #import "FBSDKGraphRequestBody.h"
 
+#import "../../Basics/Internal/FBSDKBasicUtility.h"
+
 #import "FBSDKConstants.h"
 #import "FBSDKCrypto.h"
 #import "FBSDKGraphRequestDataAttachment.h"
+#import "FBSDKInternalUtility.h"
 #import "FBSDKLogger.h"
 #import "FBSDKSettings.h"
 
@@ -151,6 +154,15 @@
     contentBlock();
   }
   [self appendUTF8:[[NSString alloc] initWithFormat:@"%@--%@%@", kNewline, _stringBoundary, kNewline]];
+}
+
+- (NSData *)compressedData
+{
+  if (!self.data.length || ![[self mimeContentType] isEqualToString:@"application/json"]) {
+    return nil;
+  }
+
+  return [FBSDKBasicUtility gzip:self.data];
 }
 
 @end

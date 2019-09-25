@@ -39,16 +39,17 @@ NS_SWIFT_NAME(LoginCompletionParameters)
 - (instancetype)initWithError:(NSError *)error;
 
 @property (nonatomic, copy, readonly) NSString *accessTokenString;
+@property (nonatomic, copy, readonly) NSString *nonceString;
 
 @property (nonatomic, copy, readonly) NSSet *permissions;
 @property (nonatomic, copy, readonly) NSSet *declinedPermissions;
+@property (nonatomic, copy, readonly) NSSet *expiredPermissions;
 
 @property (nonatomic, copy, readonly) NSString *appID;
 @property (nonatomic, copy, readonly) NSString *userID;
 
 @property (nonatomic, copy, readonly) NSError *error;
 
-@property (nonatomic, readonly, getter=isSystemAccount) BOOL systemAccount;
 @property (nonatomic, copy, readonly) NSDate *expirationDate;
 @property (nonatomic, copy, readonly) NSDate *dataAccessExpirationDate;
 
@@ -62,7 +63,7 @@ NS_SWIFT_NAME(LoginCompleting)
   Invoke \p handler with the login parameters derived from the authentication result.
  See the implementing class's documentation for whether it completes synchronously or asynchronously.
  */
-- (void)completeLogIn:(FBSDKLoginManager *)loginManager withHandler:(FBSDKLoginCompletionParametersBlock)handler;
+- (void)completeLoginWithHandler:(FBSDKLoginCompletionParametersBlock)handler;
 
 @end
 
@@ -86,31 +87,3 @@ NS_SWIFT_NAME(LoginURLCompleter)
 
 @end
 
-/**
-  Requests the User ID, granted permissions and declined permissions from the server
- using the given access token, which must occur before authentication can be completed.
-
- Completion occurs asynchronously.
- */
-NS_SWIFT_NAME(LoginSystemAccountCompleter)
-@interface FBSDKLoginSystemAccountCompleter : NSObject <FBSDKLoginCompleting>
-
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
-- (instancetype)initWithTokenString:(NSString *)tokenString appID:(NSString *)appID NS_DESIGNATED_INITIALIZER;
-
-@end
-
-/**
-  Converts an Accounts framework error in to an error or cancellation result
-
- Completion occurs synchronously.
- */
-NS_SWIFT_NAME(LoginSystemAccountErrorCompleter)
-@interface FBSDKLoginSystemAccountErrorCompleter : NSObject <FBSDKLoginCompleting>
-
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
-- (instancetype)initWithError:(NSError *)accountStoreError permissions:(NSSet *)permissions NS_DESIGNATED_INITIALIZER;
-
-@end

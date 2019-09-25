@@ -16,7 +16,6 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <Accounts/Accounts.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -85,29 +84,12 @@ typedef NS_ENUM(NSUInteger, FBSDKDefaultAudience)
 typedef NS_ENUM(NSUInteger, FBSDKLoginBehavior)
 {
   /**
-    This is the default behavior, and indicates logging in through the native
-   Facebook app may be used. The SDK may still use Safari instead.
+    This is the default behavior, and indicates logging in via ASWebAuthenticationSession (iOS 12+) or SFAuthenticationSession (iOS 11),
+    which present specialized SafariViewControllers. Falls back to plain SFSafariViewController (iOS 9 and 10) or Safari (iOS 8).
    */
-  FBSDKLoginBehaviorNative = 0,
-  /**
-    Attempts log in through the Safari or SFSafariViewController, if available.
-   */
-  FBSDKLoginBehaviorBrowser,
-  /**
-    Attempts log in through the Facebook account currently signed in through
-   the device Settings.
-   @note If the account is not available to the app (either not configured by user or
-   as determined by the SDK) this behavior falls back to \c FBSDKLoginBehaviorNative.
-   */
-  FBSDKLoginBehaviorSystemAccount,
-  /**
-    Attempts log in through a modal \c UIWebView pop up
-
-   @note This behavior is only available to certain types of apps. Please check the Facebook
-   Platform Policy to verify your app meets the restrictions.
-   */
-  FBSDKLoginBehaviorWeb,
-} NS_SWIFT_NAME(LoginBehavior);
+  FBSDKLoginBehaviorBrowser = 0,
+} NS_SWIFT_NAME(LoginBehavior)
+DEPRECATED_MSG_ATTRIBUTE("All login flows utilize the browser. This will be removed in the next major release");
 
 /**
   `FBSDKLoginManager` provides methods for logging the user in and out.
@@ -138,40 +120,18 @@ NS_SWIFT_NAME(LoginManager)
 /**
   the login behavior
  */
-@property (assign, nonatomic) FBSDKLoginBehavior loginBehavior;
+@property (assign, nonatomic) FBSDKLoginBehavior loginBehavior
+DEPRECATED_MSG_ATTRIBUTE("All login flows utilize the browser. This will be removed in the next major release");
 
 /**
-  Logs the user in or authorizes additional permissions.
- @param permissions the optional array of permissions. Note this is converted to NSSet and is only
-  an NSArray for the convenience of literal syntax.
- @param fromViewController the view controller to present from. If nil, the topmost view controller will be
-  automatically determined as best as possible.
- @param handler the callback.
-
- Use this method when asking for read permissions. You should only ask for permissions when they
-  are needed and explain the value to the user. You can inspect the result.declinedPermissions to also
-  provide more information to the user if they decline permissions.
-
- This method will present UI the user. You typically should check if `[FBSDKAccessToken currentAccessToken]`
- already contains the permissions you need before asking to reduce unnecessary app switching. For example,
- you could make that check at viewDidLoad.
- You can only do one login call at a time. Calling a login method before the completion handler is called
- on a previous login will return an error.
- */
-- (void)logInWithReadPermissions:(NSArray<NSString *> *)permissions
-              fromViewController:(nullable UIViewController *)fromViewController
-                         handler:(nullable FBSDKLoginManagerLoginResultBlock)handler
-NS_SWIFT_NAME(logIn(readPermissions:from:handler:));
-
-/**
-  Logs the user in or authorizes additional permissions.
+ Logs the user in or authorizes additional permissions.
  @param permissions the optional array of permissions. Note this is converted to NSSet and is only
  an NSArray for the convenience of literal syntax.
  @param fromViewController the view controller to present from. If nil, the topmost view controller will be
  automatically determined as best as possible.
  @param handler the callback.
 
- Use this method when asking for publish permissions. You should only ask for permissions when they
+ Use this method when asking for read permissions. You should only ask for permissions when they
  are needed and explain the value to the user. You can inspect the result.declinedPermissions to also
  provide more information to the user if they decline permissions.
 
@@ -181,11 +141,10 @@ NS_SWIFT_NAME(logIn(readPermissions:from:handler:));
  You can only do one login call at a time. Calling a login method before the completion handler is called
  on a previous login will return an error.
  */
-- (void)logInWithPublishPermissions:(NSArray<NSString *> *)permissions
-                 fromViewController:(nullable UIViewController *)fromViewController
-                            handler:(nullable FBSDKLoginManagerLoginResultBlock)handler
-NS_SWIFT_NAME(logIn(publishPermissions:from:handler:));
-
+- (void)logInWithPermissions:(NSArray<NSString *> *)permissions
+              fromViewController:(nullable UIViewController *)fromViewController
+                         handler:(nullable FBSDKLoginManagerLoginResultBlock)handler
+NS_SWIFT_NAME(logIn(permissions:from:handler:));
 
 /**
   Requests user's permission to reathorize application's data access, after it has expired due to inactivity.
@@ -208,24 +167,6 @@ NS_SWIFT_NAME(reauthorizeDataAccess(from:handler:));
  This calls [FBSDKAccessToken setCurrentAccessToken:nil] and [FBSDKProfile setCurrentProfile:nil].
  */
 - (void)logOut;
-
-/**
- @method
-
-  Issues an asynchronous renewCredentialsForAccount call to the device's Facebook account store.
-
- @param handler The completion handler to call when the renewal is completed. This can be invoked on an arbitrary thread.
-
-
- This can be used to explicitly renew account credentials and is provided as a convenience wrapper around
- `[ACAccountStore renewCredentialsForAccount:completion]`. Note the method will not issue the renewal call if the the
- Facebook account has not been set on the device, or if access had not been granted to the account (though the handler
- wil receive an error).
-
- If the `[FBSDKAccessToken currentAccessToken]` was from the account store, a succesful renewal will also set
- a new "currentAccessToken".
- */
-+ (void)renewSystemCredentials:(ACAccountStoreCredentialRenewalHandler)handler;
 
 @end
 

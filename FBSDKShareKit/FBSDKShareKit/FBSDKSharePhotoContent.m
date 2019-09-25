@@ -20,7 +20,11 @@
 
 #import <Photos/Photos.h>
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKHashtag.h"
 #import "FBSDKSharePhoto.h"
 #import "FBSDKShareUtility.h"
@@ -114,9 +118,9 @@
     }
   }
   if (images.count > 0) {
-    [FBSDKInternalUtility dictionary:updatedParameters
-                           setObject:images
-                              forKey:@"photos"];
+    [FBSDKBasicUtility dictionary:updatedParameters
+                        setObject:images
+                           forKey:@"photos"];
   }
 
   return updatedParameters;

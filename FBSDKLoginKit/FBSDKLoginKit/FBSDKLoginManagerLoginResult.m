@@ -18,7 +18,11 @@
 
 #import "FBSDKLoginManagerLoginResult+Internal.h"
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 
 @implementation FBSDKLoginManagerLoginResult {
   NSMutableDictionary *_mutableLoggingExtras;
@@ -40,7 +44,7 @@
 
 - (void)addLoggingExtra:(id)object forKey:(id<NSCopying>)key
 {
-  [FBSDKInternalUtility dictionary:_mutableLoggingExtras setObject:object forKey:key];
+  [FBSDKBasicUtility dictionary:_mutableLoggingExtras setObject:object forKey:key];
 }
 
 - (NSDictionary *)loggingExtras

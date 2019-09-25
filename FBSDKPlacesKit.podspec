@@ -3,7 +3,7 @@
 Pod::Spec.new do |s|
 
   s.name         = 'FBSDKPlacesKit'
-  s.version      = '4.40.0'
+  s.version      = '5.6.0'
   s.summary      = 'Official Facebook SDK for iOS to access Facebook Places'
 
   s.description  = <<-DESC
@@ -29,6 +29,6 @@ Pod::Spec.new do |s|
 
   s.source_files   = 'FBSDKPlacesKit/FBSDKPlacesKit/**/*.{h,m}'
   s.public_header_files = 'FBSDKPlacesKit/FBSDKPlacesKit/*.{h}'
-  s.dependency 'FBSDKCoreKit'
+  s.dependency 'FBSDKCoreKit', "~> 5.0"
 
 end

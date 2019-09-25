@@ -20,7 +20,11 @@
 
 #import <FBSDKLoginKit/FBSDKLoginManager.h>
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 
 @class FBSDKAccessToken;
 @class FBSDKLoginCompletionParameters;
@@ -31,14 +35,7 @@
 typedef void (^FBSDKBrowserLoginSuccessBlock)(BOOL didOpen, NSString *authMethod, NSError *error)
 NS_SWIFT_NAME(BrowserLoginSuccessBlock);
 
-NS_SWIFT_NAME(LoginManagerSystemAccountState)
-@interface FBSDKLoginManagerSystemAccountState : NSObject
-@property (nonatomic, assign) BOOL didShowDialog;
-@property (nonatomic, getter=isReauthorize) BOOL reauthorize;
-@property (nonatomic, getter=isUnTOSedDevice) BOOL unTOSedDevice;
-@end
-
-@interface FBSDKLoginManager ()
+@interface FBSDKLoginManager () <FBSDKURLOpening>
 @property (nonatomic, weak) UIViewController *fromViewController;
 @property (nonatomic, readonly) NSSet *requestedPermissions;
 
@@ -49,7 +46,7 @@ NS_SWIFT_NAME(LoginManagerSystemAccountState)
 
 // available to internal types to trigger login without checking read/publish mixtures.
 - (void)logInWithPermissions:(NSSet *)permissions handler:(FBSDKLoginManagerLoginResultBlock)handler;
-- (void)logInWithBehavior:(FBSDKLoginBehavior)loginBehavior;
+- (void)logIn;
 
 // made available for testing only
 - (NSDictionary *)logInParametersWithPermissions:(NSSet *)permissions serverConfiguration:(FBSDKServerConfiguration *)serverConfiguration;
@@ -60,31 +57,7 @@ NS_SWIFT_NAME(LoginManagerSystemAccountState)
 - (void)setHandler:(FBSDKLoginManagerLoginResultBlock)handler;
 // for testing only
 - (void)setRequestedPermissions:(NSSet *)requestedPermissions;
-
-@end
-
-// the category is made available for testing only
-@interface FBSDKLoginManager (Native) <FBSDKURLOpening>
-
-- (void)performNativeLogInWithParameters:(NSDictionary *)loginParams handler:(FBSDKSuccessBlock)handler;
+// for testing only
 - (void)performBrowserLogInWithParameters:(NSDictionary *)loginParams handler:(FBSDKBrowserLoginSuccessBlock)handler;
-
-@end
-
-// the category is made available for testing only
-@interface FBSDKLoginManager (Accounts)
-
-- (void)beginSystemLogIn;
-- (void)performSystemLogIn;
-- (void)continueSystemLogInWithTokenString:(NSString *)oauthToken error:(NSError *)accountStoreError state:(FBSDKLoginManagerSystemAccountState *)state;
-
-- (void)fallbackToNativeBehavior;
-
-@end
-
-// the category is made available for testing only
-@interface FBSDKLoginManager (WebDialog) <FBSDKWebDialogDelegate>
-
-- (void)performWebLogInWithParameters:(NSDictionary *)loginParams handler:(FBSDKSuccessBlock)handler;
 
 @end

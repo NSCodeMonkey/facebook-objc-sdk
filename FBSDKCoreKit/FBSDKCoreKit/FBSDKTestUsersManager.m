@@ -18,7 +18,7 @@
 
 #import "FBSDKTestUsersManager.h"
 
-#import "FBSDKCoreKit+Internal.h"
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
 
 static NSString *const kFBGraphAPITestUsersPathFormat = @"%@/accounts/test-users";
 static NSString *const kAccountsDictionaryTokenKey = @"access_token";
@@ -211,6 +211,7 @@ static NSMutableDictionary<NSString *, FBSDKTestUsersManager *> *gInstancesDicti
   return [[FBSDKAccessToken alloc] initWithTokenString:tokenString
                                            permissions:permissions.allObjects
                                    declinedPermissions:@[]
+                                    expiredPermissions:@[]
                                                  appID:_appID
                                                 userID:userId
                                         expirationDate:nil
